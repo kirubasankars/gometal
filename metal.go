@@ -46,17 +46,17 @@ func (m *Metal) JSON() interface{} {
 	}
 }
 
-func (m *Metal) Get(property string) (interface{}, error) {
+func (m *Metal) Get(property string) interface{} {
 	dot := strings.Index(property, ".")
 	if dot > -1 {
 		var path, remaingPath string = property[0:dot], property[dot+1:]
-		pathValue, _ := m.Get(path)
+		pathValue := m.Get(path)
 		if pathValue != nil {
 			if m1, ok := pathValue.(*Metal); ok {
 				return m1.Get(remaingPath)
 			} else {
 				if remaingPath != "" {
-					return nil, errors.New(path + " is not a object." + remaingPath + " can't be accessed")
+					errors.New(path + " is not a object." + remaingPath + " can't be accessed")
 				}
 			}
 		}
@@ -69,41 +69,38 @@ func (m *Metal) Get(property string) (interface{}, error) {
 	}
 
 	if property == "$length" {
-		return m.length, nil
+		return m.length
 	}
 
 	if m.parent != nil && property == "$parent" {
 		if m.parent.array == true {
-			return m.parent.parent, nil
+			return m.parent.parent
 		}
-		return m.parent, nil
+		return m.parent
 	}
 
 	if v, ok := m.attributes[property]; ok {
-		return v, nil
+		return v
 	}
 
-	return nil, errors.New(property + " not found")
+	return nil
 }
 
 func (m *Metal) Set(property string, value interface{}) error {
 	dot := strings.Index(property, ".")
 	if dot > -1 {
 		path, remaingPath := property[0:dot], property[dot+1:]
-		pathValue, _ := m.Get(path)
-		if pathValue == nil {
-			if string(path[0]) == "@" {
-				if _, err := strconv.Atoi(path[1:]); err != nil {
-					return errors.New("array should accessed by index")
-				}
-				m.array = true
-			}
+		pathValue := m.Get(path)
+		if pathValue == nil {			
 			pathValue = NewMetal()
 			m.Set(path, pathValue)
 		}
 		pathValue.(*Metal).Set(remaingPath, value)
 	} else {
-		if property[0] == '@' {
+		if property[0] == '@' {						
+			if _, err := strconv.Atoi(property[1:]); err != nil {
+				return errors.New("array should accessed by index")
+			}
 			m.array = true
 		}
 		var m1, ok = value.(*Metal)

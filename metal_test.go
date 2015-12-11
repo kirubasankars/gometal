@@ -2,7 +2,7 @@ package metal_test
 
 import (
 	"encoding/json"
-	"gravity/metal"
+	"github.com/metal"
 	"bytes"
 	"fmt"
 	"testing"
@@ -11,7 +11,7 @@ import (
 func TestSet(t *testing.T) {
 	var m = metal.NewMetal()
 	m.Set("student.name", "Dev")
-	var v, _ = m.Get("student.name")
+	var v = m.Get("student.name")
 	if v != "Dev" {
 		t.Error("unable to get student.name")
 	}
@@ -20,7 +20,7 @@ func TestSet(t *testing.T) {
 func TestSet_array(t *testing.T) {
 	var m = metal.NewMetal()
 	m.Set("student.marks.@0", 100)
-	var v, _ = m.Get("student.marks.@0")
+	var v = m.Get("student.marks.@0")
 	if v != 100 {
 		t.Error("unable to get student.marks.@0")
 	}
@@ -29,7 +29,7 @@ func TestSet_array(t *testing.T) {
 func TestSet_arrayobject(t *testing.T) {
 	var m = metal.NewMetal()
 	m.Set("student.marks.@0.tamil", 1)
-	var v, _ = m.Get("student.marks.@0.tamil")
+	var v = m.Get("student.marks.@0.tamil")
 	if v != 1 {
 		t.Error("unable to get student.marks.@0.tamil")
 	}
@@ -51,8 +51,8 @@ func TestSet_Getparent(t *testing.T) {
 	m.Set("student.name", "Dev")
 	m.Set("student.marks.@0", 10)
 	m.Set("student.marks.@2.a", 20)
-	var v1, _ = m.Get("student.marks.$parent.name")
-	var v, _ = m.Get("student.marks.@2.$parent.name")
+	var v1 = m.Get("student.marks.$parent.name")
+	var v = m.Get("student.marks.@2.$parent.name")
 	if v1 != "Dev" || v != "Dev" {
 		t.Error("$parent failed", v1, v)
 	}
@@ -64,8 +64,8 @@ func TestSet_Getlength(t *testing.T) {
 	m.Set("student.marks.@0", 10)
 	m.Set("student.marks.@1", 10)
 	m.Set("student.marks.@2.a", 20)
-	var v1, _ = m.Get("student.marks.$length")
-	var v, _ = m.Get("student.$length")
+	var v1 = m.Get("student.marks.$length")
+	var v = m.Get("student.$length")
 	if v1 != 3 || v != 2 {
 		t.Error("$length failed", v1, v)
 	}
