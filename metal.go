@@ -34,14 +34,12 @@ func (m *Metal) JSON() interface{} {
 		for k, v := range m.attributes {
 			if pmetal, ok := v.(*Metal); ok {
 				idx, _ := strconv.Atoi(k[1:])
-
 				array[idx] = pmetal.JSON()
 			} else {
 				idx, _ := strconv.Atoi(k[1:])
 				array[idx] = v
 			}
 		}
-
 		return array
 	}
 }

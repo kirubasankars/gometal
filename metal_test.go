@@ -4,15 +4,16 @@ import (
 	"encoding/json"
 	"github.com/metal"
 	"bytes"
-	"fmt"
+	_ "fmt"
 	"testing"
 )
 
 func TestSet(t *testing.T) {
 	var m = metal.NewMetal()
 	m.Set("student.name", "Dev")
-	var v = m.Get("student.name")
-	if v != "Dev" {
+	m1, _ := m.Get("student").(*metal.Metal);	
+	v := m.Get("student.name") == nil && m1.Get("name") == nil
+	if v {
 		t.Error("unable to get student.name")
 	}
 }
@@ -79,16 +80,14 @@ func TestParse(t *testing.T) {
 	m.Set("student.marks.@2.a", 100)
 	var b = new(bytes.Buffer)
 	enc := json.NewEncoder(b)
-	var _ = enc.Encode(m.JSON())
-	fmt.Println(b);
+	var _ = enc.Encode(m.JSON())	
 
 	var m1 = metal.NewMetal();
 	m1.Parse(b.Bytes());
 	var b1 = new(bytes.Buffer)
 	enc1 := json.NewEncoder(b1)
 	var _ = enc1.Encode(m1.JSON())
-	fmt.Println(b1);
-
+	
 	if string(b.Bytes()) != string(b1.Bytes()) {
 		t.Error("Parsing is not working")
 	}
