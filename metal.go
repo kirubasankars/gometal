@@ -18,12 +18,12 @@ func NewMetal() *Metal {
 	return &Metal{make(map[string]interface{}), nil, false, 0}
 }
 
-func (m *Metal) JSON() interface{} {
+func (m *Metal) Raw() interface{} {
 	if m.array == false {
 		object := make(map[string]interface{})
 		for k, v := range m.attributes {
 			if pmetal, ok := v.(*Metal); ok {
-				object[k] = pmetal.JSON()
+				object[k] = pmetal.Raw()
 			} else {
 				object[k] = v
 			}
@@ -34,7 +34,7 @@ func (m *Metal) JSON() interface{} {
 		for k, v := range m.attributes {
 			if pmetal, ok := v.(*Metal); ok {
 				idx, _ := strconv.Atoi(k[1:])
-				array[idx] = pmetal.JSON()
+				array[idx] = pmetal.Raw()
 			} else {
 				idx, _ := strconv.Atoi(k[1:])
 				array[idx] = v
