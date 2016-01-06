@@ -26,6 +26,9 @@ func (m *Metal) Raw() interface{} {
 	if m.array == false {
 		object := make(map[string]interface{})
 		for k, v := range m.attributes {
+			if string(k[0]) == "_" {
+				continue
+			}
 			if pmetal, ok := v.(*Metal); ok {
 				object[k] = pmetal.Raw()
 			} else {
