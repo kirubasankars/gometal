@@ -2,7 +2,7 @@ package metal_test
 
 import (
 	"encoding/json"
-	"github.com/metal"
+	"metal"
 	"bytes"
 	_ "fmt"
 	"testing"
@@ -41,7 +41,7 @@ func TestSet_array_object_json(t *testing.T) {
 	m.Set("student.marks.@0", 10)
 	m.Set("student.marks.@1", 20)
 	m.Set("student.marks.@2.a", 20)
-	json, _ := json.Marshal(m.JSON())
+	json, _ := json.Marshal(m.Raw())
 	if string(json) != string([]byte(`{"student":{"marks":[10,20,{"a":20}]}}`)) {
 		t.Error("got this", string(json), "expecting ...", string([]byte(`{"student":{"marks":[10,20,{"a": 20}]}}`)))
 	}
@@ -80,13 +80,13 @@ func TestParse(t *testing.T) {
 	m.Set("student.marks.@2.a", 100)
 	var b = new(bytes.Buffer)
 	enc := json.NewEncoder(b)
-	var _ = enc.Encode(m.JSON())	
+	var _ = enc.Encode(m.Raw())	
 
 	var m1 = metal.NewMetal();
 	m1.Parse(b.Bytes());
 	var b1 = new(bytes.Buffer)
 	enc1 := json.NewEncoder(b1)
-	var _ = enc1.Encode(m1.JSON())
+	var _ = enc1.Encode(m1.Raw())
 	
 	if string(b.Bytes()) != string(b1.Bytes()) {
 		t.Error("Parsing is not working")
