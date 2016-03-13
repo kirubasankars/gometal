@@ -51,6 +51,11 @@ func (m *Metal) Raw() interface{} {
 	}
 }
 
+func (m *Metal) Json() string {
+	out, _ := json.Marshal(m.Raw())
+	return string(out)
+}
+
 func (m *Metal) Get(property string) interface{} {
 	dot := strings.Index(property, ".")
 	if dot > -1 {
